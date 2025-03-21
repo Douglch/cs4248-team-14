@@ -55,10 +55,12 @@ def prepare(source_file, target_file, source_lang, target_lang, lower=False):
 
     # Drop too-long rows (source or target)
     # Based on your language, change the values "2" and "200"
-    df["Too-Long"] = ((df['Source'].str.count(' ')+1) > (df['Target'].str.count(' ')+1) * 2) |  \
-                     ((df['Target'].str.count(' ')+1) > (df['Source'].str.count(' ')+1) * 2) |  \
-                     ((df['Source'].str.count(' ')+1) > 200) |  \
-                     ((df['Target'].str.count(' ')+1) > 200)
+    df["Too-Long"] = (
+        (df['Source'].str.len() > (df['Target'].str.len() * 5)) |
+        (df['Target'].str.len() > (df['Source'].str.len() * 5)) |
+        (df['Source'].str.len() > 500) |
+        (df['Target'].str.count(' ') + 1 > 250)
+    )
                 
     #display(df.loc[df['Too-Long'] == True]) # display only too long rows
     df = df.set_index(['Too-Long'])
